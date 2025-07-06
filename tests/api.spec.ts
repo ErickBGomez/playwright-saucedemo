@@ -209,6 +209,70 @@ test.describe("API Tests", () => {
       });
     });
 
+    test.describe("PATCH Requests", () => {
+      test("should patch a post", async ({ request }) => {
+        const requestDate = new Date();
+
+        const partialUpdate = {
+          title: "Partially Updated Title",
+        };
+
+        const response = await request.patch(
+          "https://jsonplaceholder.typicode.com/posts/1",
+          {
+            data: partialUpdate,
+          }
+        );
+
+        const responseDate = new Date();
+
+        // Check status code
+        expect(response.status()).toBe(200);
+
+        // Check response body
+        const responseBody = await response.json();
+        expect(responseBody.id).toBe(1);
+        expect(responseBody.title).toBe(partialUpdate.title);
+        expect(responseBody).toHaveProperty("body");
+        expect(responseBody).toHaveProperty("userId");
+
+        // Check response time
+        const responseTime = responseDate.getTime() - requestDate.getTime();
+        expect(responseTime).toBeLessThan(10000);
+      });
+
+      test("should patch multiple fields", async ({ request }) => {
+        const requestDate = new Date();
+
+        const partialUpdate = {
+          title: "New Title",
+          body: "New Body Content",
+        };
+
+        const response = await request.patch(
+          "https://jsonplaceholder.typicode.com/posts/1",
+          {
+            data: partialUpdate,
+          }
+        );
+
+        const responseDate = new Date();
+
+        // Check status code
+        expect(response.status()).toBe(200);
+
+        // Check response body
+        const responseBody = await response.json();
+        expect(responseBody.title).toBe(partialUpdate.title);
+        expect(responseBody.body).toBe(partialUpdate.body);
+        expect(responseBody).toHaveProperty("userId");
+
+        // Check response time
+        const responseTime = responseDate.getTime() - requestDate.getTime();
+        expect(responseTime).toBeLessThan(10000);
+      });
+    });
+
     test.describe("DELETE Requests", () => {
       test("should delete an existing post", async ({ request }) => {
         const requestDate = new Date();
