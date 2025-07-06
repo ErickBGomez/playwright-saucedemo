@@ -32,6 +32,7 @@ test.describe("Login Tests", () => {
     // For each valid user saved in this array, create a test
     // Even tough problem_user and performance_glitch_user are not standard users,
     // these can indeed login successfully
+    // Approach made by the official documentation: https://playwright.dev/docs/test-parameterize#parameterized-tests
     validCredentials.forEach(({ username, password }) => {
       test(`should login successfully with ${username}`, async ({ page }) => {
         await loginPage.login(username, password);
