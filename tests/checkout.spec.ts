@@ -35,6 +35,11 @@ test.describe("Checkout Tests", () => {
       // Go to checkout step one
       await cartPage.proceedToCheckout();
 
+      // Check if input are empty when loading the page
+      await expect(checkoutPage.firstNameInput).toBeEmpty();
+      await expect(checkoutPage.lastNameInput).toBeEmpty();
+      await expect(checkoutPage.postalCodeInput).toBeEmpty();
+
       // Fill the checkout form with required information
       await checkoutPage.fillCheckoutForm("Erick", "Gomez", "12345");
 
@@ -57,6 +62,11 @@ test.describe("Checkout Tests", () => {
       // Navigate to cart and proceed to checkout
       await cartPage.goto();
       await cartPage.proceedToCheckout();
+
+      // Check if input are empty when loading the page
+      await expect(checkoutPage.firstNameInput).toBeEmpty();
+      await expect(checkoutPage.lastNameInput).toBeEmpty();
+      await expect(checkoutPage.postalCodeInput).toBeEmpty();
 
       // Fill the checkout form
       await checkoutPage.fillCheckoutForm("Erick", "Gomez", "12345");
