@@ -11,7 +11,7 @@ export class CartPage {
     this.page = page;
     this.cartItems = page.locator(".cart_item");
     this.removeButtons = page.locator(".btn_secondary.cart_button");
-    this.checkoutButton = page.locator("#checkout");
+    this.checkoutButton = page.getByRole("link", { name: "CHECKOUT" });
     this.continueShoppingButton = page.locator("#continue-shopping");
   }
 
