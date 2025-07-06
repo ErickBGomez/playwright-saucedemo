@@ -6,6 +6,8 @@ export class InventoryPage {
   readonly removeButtons: Locator;
   readonly cartLink: Locator;
   readonly cartCounter: Locator;
+  readonly sidebarMenu: Locator;
+  readonly logoutLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -13,6 +15,8 @@ export class InventoryPage {
     this.removeButtons = page.locator(".btn_secondary.btn_inventory");
     this.cartLink = page.locator(".shopping_cart_link");
     this.cartCounter = page.locator(".shopping_cart_badge");
+    this.sidebarMenu = page.getByRole("button", { name: "Open Menu" });
+    this.logoutLink = page.getByRole("link", { name: "Logout" });
   }
 
   async goto() {
@@ -29,5 +33,13 @@ export class InventoryPage {
 
   async goToCart() {
     await this.cartLink.click();
+  }
+
+  async openSidebarMenu() {
+    await this.sidebarMenu.click();
+  }
+
+  async logout() {
+    await this.logoutLink.click();
   }
 }

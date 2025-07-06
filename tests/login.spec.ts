@@ -1,12 +1,15 @@
 import { test, expect } from "@playwright/test";
 import { LoginPage } from "../pages/login.page";
+import { InventoryPage } from "../pages/inventory.page";
 
 test.describe("Login Tests", () => {
   let loginPage: LoginPage;
+  let inventoryPage: InventoryPage;
 
   // Go to login page before each test
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
+    inventoryPage = new InventoryPage(page);
     await loginPage.goto();
   });
 
@@ -62,6 +65,25 @@ test.describe("Login Tests", () => {
         await loginPage.login(username, password);
         await expect(loginPage.errorMessage).toBeVisible();
       });
+    });
+  });
+
+  test.describe("Log out Tests", () => {
+    test("should log out successfully", async ({ page }) => {
+      // Login with standard user
+      await loginPage.login("standard_user", "secret_sauce");
+
+      // Check if the current page is the inventory page
+      await expect(page.url()).toContain("/inventory.html");
+
+      // Open sidebar menu and click logout
+      await inventoryPage.openSidebarMenu();
+
+      // Click the logout link
+      await inventoryPage.logout();
+
+      // Check if current page is the login page
+      await expect(page.url()).toContain("/index.html");
     });
   });
 });
