@@ -3,12 +3,14 @@ import { LoginPage } from "../pages/login.page";
 import { InventoryPage } from "../pages/inventory.page";
 import { CartPage } from "../pages/cart.page";
 import { CheckoutPage } from "../pages/checkout.page";
+import { config } from "../utils/config";
 
 test.describe("Checkout Tests", () => {
   let loginPage: LoginPage;
   let inventoryPage: InventoryPage;
   let cartPage: CartPage;
   let checkoutPage: CheckoutPage;
+  let validUser: { username: string; password: string };
 
   // Login with standard user before each test
   test.beforeEach(async ({ page }) => {
@@ -16,8 +18,10 @@ test.describe("Checkout Tests", () => {
     inventoryPage = new InventoryPage(page);
     cartPage = new CartPage(page);
     checkoutPage = new CheckoutPage(page);
+    validUser = config.validCredentials[0];
+
     await loginPage.goto();
-    await loginPage.login("standard_user", "secret_sauce");
+    await loginPage.login(validUser.username, validUser.password);
   });
 
   test.describe("Perform Complete Checkout Flow", () => {
