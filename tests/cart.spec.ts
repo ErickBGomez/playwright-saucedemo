@@ -21,12 +21,14 @@ test.describe("Cart Tests", () => {
     // Go to inventory page before each test
     test.beforeEach(async () => {
       await inventoryPage.goto();
+      await expect(inventoryPage.addToCartButtons.first()).toBeVisible();
     });
 
     // Click to add cart to the first item found
     // and list, check if the cart badge/counter shows up with the value as 1
     test("should add first item to cart", async () => {
       await inventoryPage.addFirstItemToCart();
+      await expect(inventoryPage.cartCounter).toBeVisible();
       await expect(inventoryPage.cartCounter).toHaveText("1");
     });
 
@@ -34,6 +36,7 @@ test.describe("Cart Tests", () => {
       // Check if the added item can be removed if clicked again with
       // removeButton locator. Then check if the cart badge/counter is not attached (disappears from he DOM)
       await inventoryPage.addFirstItemToCart();
+      await expect(inventoryPage.cartCounter).toBeVisible();
       await expect(inventoryPage.cartCounter).toHaveText("1");
       await inventoryPage.removeFirstItemFromCart();
       await expect(inventoryPage.cartCounter).not.toBeAttached();
@@ -44,27 +47,35 @@ test.describe("Cart Tests", () => {
     test("should add item in inventory page, and then check if it exists in the cart page", async () => {
       // Go to inventory page and add the first item to the cart
       await inventoryPage.goto();
+      await expect(inventoryPage.addToCartButtons.first()).toBeVisible();
       await inventoryPage.addFirstItemToCart();
+      await expect(inventoryPage.cartCounter).toBeVisible();
       await expect(inventoryPage.cartCounter).toHaveText("1");
 
       // Navigate to the cart page and check if a .cart_item node exists
       await cartPage.goto();
+      await expect(cartPage.cartItems).toHaveCount(1);
       await expect(cartPage.cartItems.first()).toBeVisible();
     });
 
     test("should remove item from cart", async () => {
       // Go to inventory page and add the first item to the cart
       await inventoryPage.goto();
+      await expect(inventoryPage.addToCartButtons.first()).toBeVisible();
       await inventoryPage.addFirstItemToCart();
+      await expect(inventoryPage.cartCounter).toBeVisible();
       await expect(inventoryPage.cartCounter).toHaveText("1");
 
       // Navigate to the cart page and check if a .cart_item node exists
       await cartPage.goto();
+      await expect(cartPage.cartItems).toHaveCount(1);
       await expect(cartPage.cartItems.first()).toBeVisible();
 
       // Remove the item from the cart
       await cartPage.removeFirstItemFromCart();
       await expect(cartPage.cartItems).toHaveCount(0);
+      // Verify cart counter is no longer visible
+      await expect(inventoryPage.cartCounter).not.toBeAttached();
     });
   });
 });
