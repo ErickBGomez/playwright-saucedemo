@@ -25,6 +25,7 @@ test.describe("Checkout Tests", () => {
       // Add item from inventory
       await inventoryPage.goto();
       await inventoryPage.addToCartButtons.first().click();
+      await expect(inventoryPage.cartCounter).toBeVisible();
       await expect(inventoryPage.cartCounter).toHaveText("1");
 
       // Navigate to cart and verify item exists
@@ -34,10 +35,14 @@ test.describe("Checkout Tests", () => {
 
       // Go to checkout step one
       await cartPage.proceedToCheckout();
+      await expect(page.url()).toContain("checkout-step-one.html");
 
       // Check if input are empty when loading the page
+      await expect(checkoutPage.firstNameInput).toBeVisible();
       await expect(checkoutPage.firstNameInput).toBeEmpty();
+      await expect(checkoutPage.lastNameInput).toBeVisible();
       await expect(checkoutPage.lastNameInput).toBeEmpty();
+      await expect(checkoutPage.postalCodeInput).toBeVisible();
       await expect(checkoutPage.postalCodeInput).toBeEmpty();
 
       // Fill the checkout form with required information
@@ -57,15 +62,21 @@ test.describe("Checkout Tests", () => {
       // Add item from inventory
       await inventoryPage.goto();
       await inventoryPage.addToCartButtons.first().click();
+      await expect(inventoryPage.cartCounter).toBeVisible();
       await expect(inventoryPage.cartCounter).toHaveText("1");
 
       // Navigate to cart and proceed to checkout
       await cartPage.goto();
+      await expect(cartPage.cartItems).toHaveCount(1);
       await cartPage.proceedToCheckout();
+      await expect(page.url()).toContain("checkout-step-one.html");
 
       // Check if input are empty when loading the page
+      await expect(checkoutPage.firstNameInput).toBeVisible();
       await expect(checkoutPage.firstNameInput).toBeEmpty();
+      await expect(checkoutPage.lastNameInput).toBeVisible();
       await expect(checkoutPage.lastNameInput).toBeEmpty();
+      await expect(checkoutPage.postalCodeInput).toBeVisible();
       await expect(checkoutPage.postalCodeInput).toBeEmpty();
 
       // Fill the checkout form
@@ -85,10 +96,12 @@ test.describe("Checkout Tests", () => {
       // Add item to cart from inventory page
       await inventoryPage.goto();
       await inventoryPage.addFirstItemToCart();
+      await expect(inventoryPage.cartCounter).toBeVisible();
       await expect(inventoryPage.cartCounter).toHaveText("1");
 
       // Go to cart and verify item was added
       await cartPage.goto();
+      await expect(cartPage.cartItems).toHaveCount(1);
       await expect(cartPage.cartItems.first()).toBeVisible();
 
       // Proceed to checkout step one
@@ -107,6 +120,7 @@ test.describe("Checkout Tests", () => {
 
       // Verify completion
       await expect(page.url()).toContain("checkout-complete.html");
+      await expect(checkoutPage.completeHeader).toBeVisible();
       await expect(checkoutPage.completeHeader).toHaveText(
         "THANK YOU FOR YOUR ORDER"
       );
@@ -114,48 +128,60 @@ test.describe("Checkout Tests", () => {
   });
 
   test.describe("Checkout Form Validation", () => {
-    test.beforeEach(async () => {
+    test.beforeEach(async ({ page }) => {
       // Add item and navigate to checkout for each validation test
       await inventoryPage.goto();
       await inventoryPage.addToCartButtons.first().click();
+      await expect(inventoryPage.cartCounter).toBeVisible();
+      await expect(inventoryPage.cartCounter).toHaveText("1");
       await cartPage.goto();
+      await expect(cartPage.cartItems).toHaveCount(1);
       await cartPage.proceedToCheckout();
+      await expect(page.url()).toContain("checkout-step-one.html");
     });
 
-    test("should show error when first name is missing", async () => {
+    test("should show error when first name is missing", async ({ page }) => {
       await checkoutPage.fillCheckoutForm("", "Gomez", "12345");
       await checkoutPage.continueToStepTwo();
       await expect(checkoutPage.errorMessage).toBeVisible();
       await expect(checkoutPage.errorMessage).toContainText(
         "First Name is required"
       );
+      // Verify we're still on step one
+      await expect(page.url()).toContain("checkout-step-one.html");
     });
 
-    test("should show error when last name is missing", async () => {
+    test("should show error when last name is missing", async ({ page }) => {
       await checkoutPage.fillCheckoutForm("Erick", "", "12345");
       await checkoutPage.continueToStepTwo();
       await expect(checkoutPage.errorMessage).toBeVisible();
       await expect(checkoutPage.errorMessage).toContainText(
         "Last Name is required"
       );
+      // Verify we're still on step one
+      await expect(page.url()).toContain("checkout-step-one.html");
     });
 
-    test("should show error when postal code is missing", async () => {
+    test("should show error when postal code is missing", async ({ page }) => {
       await checkoutPage.fillCheckoutForm("Erick", "Gomez", "");
       await checkoutPage.continueToStepTwo();
       await expect(checkoutPage.errorMessage).toBeVisible();
       await expect(checkoutPage.errorMessage).toContainText(
         "Postal Code is required"
       );
+      // Verify we're still on step one
+      await expect(page.url()).toContain("checkout-step-one.html");
     });
 
-    test("should show error when all fields are empty", async () => {
+    test("should show error when all fields are empty", async ({ page }) => {
       await checkoutPage.fillCheckoutForm("", "", "");
       await checkoutPage.continueToStepTwo();
       await expect(checkoutPage.errorMessage).toBeVisible();
       await expect(checkoutPage.errorMessage).toContainText(
         "First Name is required"
       );
+      // Verify we're still on step one
+      await expect(page.url()).toContain("checkout-step-one.html");
     });
   });
 });
